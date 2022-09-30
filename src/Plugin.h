@@ -8,7 +8,7 @@
 #include "llapi/mc/VanillaBlocks.hpp"
 #include "llapi/mc/HashedString.hpp"
 #include "llapi/mc/Block.hpp"
-#include "nlohmann/json.hpp"
+#include "Nlohmann/json.hpp"
 #include "PacketHelper.h"
 
 using namespace std;

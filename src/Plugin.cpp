@@ -3,13 +3,13 @@
 #include <filesystem>
 
 using namespace std;
-using namespace LL;
+using namespace ll;
 using json = nlohmann::json;
 
 namespace fs = filesystem;
 
 Logger logger("MovingLight");
-Version PLUGIN_VERSION { 1,8,0,Version::Release };
+Version PLUGIN_VERSION { 1,8,1,Version::Release };
 
 void PluginMain()
 {
@@ -37,7 +37,7 @@ void PluginInit()
     ifile.close();
     
     // Register plugin to LL.
-    LL::registerPlugin("MovingLight", "The moving light.", PLUGIN_VERSION, { {"Author","RedbeanW"}, {"Github","https://github.com/Redbeanw44602/LiteLoaderMods.git"} });
+    ll::registerPlugin("MovingLight", "The moving light.", PLUGIN_VERSION, { {"Author","RedbeanW"}, {"Github","https://github.com/Redbeanw44602/LiteLoaderMods.git"} });
     Event::ServerStartedEvent::subscribe([](Event::ServerStartedEvent ev) -> bool {
         PluginMain();
         return true;
