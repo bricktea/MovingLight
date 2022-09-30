@@ -19,9 +19,7 @@ THook(void, "?sendBlockDestructionStarted@BlockEventCoordinator@@QEAAXAEAVPlayer
     auto newHand = mainhand->clone_s();
     if (Config::isLightSource(newHand->getTypeName()) && pl->getOffhandSlot().isNull())
     {
-        auto& cont = pl->getInventory();
-        auto nowSlot = pl->getSelectedItemSlot();
-        cont.removeItem(nowSlot, 64);
+        pl->getInventory().removeItem_s(pl->getSelectedItemSlot(),mainhand->getCount());
         pl->setOffhandSlot(*newHand);
         pl->sendInventory(true);
     }
