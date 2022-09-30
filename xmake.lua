@@ -26,8 +26,7 @@ target(PROJECT_NAME)
         '/DELAYLOAD:bedrock_server.dll',
         '/NODEFAULTLIB:msvcrt.lib')
     add_includedirs(
-        BDS_DIRECTORY..'SDK/Header',
-        BDS_DIRECTORY..'SDK/Header/third-party',
+        BDS_DIRECTORY..'SDK/include',
         'src')
     add_defines(
         'NDEBUG',

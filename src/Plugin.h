@@ -3,12 +3,12 @@
 #ifndef PLUGIN_H
 #define PLUGIN_H
 
-#include "MC/ItemStack.hpp"
-#include "MC/BlockSource.hpp"
-#include "MC/VanillaBlocks.hpp"
-#include "MC/HashedString.hpp"
-#include "MC/Block.hpp"
-#include "third-party/Nlohmann/json.hpp"
+#include "llapi/mc/ItemStack.hpp"
+#include "llapi/mc/BlockSource.hpp"
+#include "llapi/mc/VanillaBlocks.hpp"
+#include "llapi/mc/HashedString.hpp"
+#include "llapi/mc/Block.hpp"
+#include "nlohmann/json.hpp"
 #include "PacketHelper.h"
 
 using namespace std;

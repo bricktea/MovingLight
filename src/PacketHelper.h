@@ -2,12 +2,12 @@
 #define PACKETHELPER_H
 
 #include "Plugin.h"
-#include "MC/Dimension.hpp"
-#include "MC/BlockPos.hpp"
-#include "MC/BinaryStream.hpp"
-#include "MC/Packet.hpp"
-#include "MC/MinecraftPackets.hpp"
-#include "MC/Level.hpp"
+#include "llapi/mc/Dimension.hpp"
+#include "llapi/mc/BlockPos.hpp"
+#include "llapi/mc/BinaryStream.hpp"
+#include "llapi/mc/Packet.hpp"
+#include "llapi/mc/MinecraftPackets.hpp"
+#include "llapi/mc/Level.hpp"
 
 namespace PacketHelper {
 

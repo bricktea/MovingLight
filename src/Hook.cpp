@@ -1,9 +1,9 @@
 #include "Plugin.h"
 
-#include "MC/ItemStack.hpp"
-#include "MC/ItemActor.hpp"
-#include "MC/Container.hpp"
-#include "MC/ServerPlayer.hpp"
+#include "llapi/mc/ItemStack.hpp"
+#include "llapi/mc/ItemActor.hpp"
+#include "llapi/mc/Container.hpp"
+#include "llapi/mc/ServerPlayer.hpp"
 
 // OffHand Helper
 
