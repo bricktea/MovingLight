@@ -1,16 +1,15 @@
 #include "Plugin.h"
 
-#include "llapi/mc/ItemStack.hpp"
 #include "llapi/mc/ItemActor.hpp"
 #include "llapi/mc/Container.hpp"
 #include "llapi/mc/ServerPlayer.hpp"
 
 // OffHand Helper
 
-THook(void, "?sendBlockDestructionStarted@BlockEventCoordinator@@QEAAXAEAVPlayer@@AEBVBlockPos@@@Z",
-    void* self, Player* pl, BlockPos* bp)
+TClasslessInstanceHook(void, "?sendBlockDestructionStarted@BlockEventCoordinator@@QEAAXAEAVPlayer@@AEBVBlockPos@@@Z",
+                       Player * pl, BlockPos * bp)
 {
-    original(self, pl, bp);
+    original(this, pl, bp);
     if (!Config::enable)
         return;
     auto mainhand = &pl->getSelectedItem();
@@ -27,53 +26,52 @@ THook(void, "?sendBlockDestructionStarted@BlockEventCoordinator@@QEAAXAEAVPlayer
 
 // Remove
 
-THook(void, "?execute@StopCommand@@UEBAXAEBVCommandOrigin@@AEAVCommandOutput@@@Z",
-    void* self, void* a2, void* a3)
+TClasslessInstanceHook(__int64, "?requestServerShutdown@DedicatedServer@@EEAAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z")
 {
     PacketHelper::stopSending = true;
-    original(self, a2, a3);
+    return original(this);
 }
 
-THook(ItemActor*, "??_EItemActor@@UEAAPEAXI@Z",
-    ItemActor* self, char a2)
+TInstanceHook(ItemActor *, "??_EItemActor@@UEAAPEAXI@Z",
+              ItemActor, char a2)
 {
-    LightMgr::clear(self->getUniqueID());
-    return original(self, a2);
+    LightMgr::clear(this->getUniqueID());
+    return original(this, a2);
 }
 
-THook(void, "?_onPlayerLeft@ServerNetworkHandler@@AEAAXPEAVServerPlayer@@_N@Z",
-    void* self, ServerPlayer* sp, bool broadcast)
+TClasslessInstanceHook(void, "?_onPlayerLeft@ServerNetworkHandler@@AEAAXPEAVServerPlayer@@_N@Z",
+                       ServerPlayer * sp, char a3)
 {
     LightMgr::clear(sp->getUniqueID());
-    original(self, sp, broadcast);
+    original(this, sp, a3);
 }
 
 // Tick
 
-THook(void, "?normalTick@Player@@UEAAXXZ",
-    Player* pl)
+TInstanceHook(void, "?normalTick@Player@@UEAAXXZ",
+              Player)
 {
-    original(pl);
-    if (!Config::enable || !pl->isRegionValid())
+    original(this);
+    if (!Config::enable || !this->isRegionValid())
         return;
-    int light = max(Config::getBrightness(&pl->getSelectedItem()), Config::getBrightness(&pl->getOffhandSlot()));
-    auto& id = pl->getUniqueID();
+    int light = max(Config::getBrightness(&this->getSelectedItem()), Config::getBrightness(&this->getOffhandSlot()));
+    auto& id = this->getUniqueID();
     if (light != 0)
-        LightMgr::turnOn(id, &pl->getRegion(), pl->getBlockPos(), light);
+        LightMgr::turnOn(id, &this->getRegion(), this->getBlockPos(), light);
     else
         LightMgr::turnOff(id);
 }
 
-THook(void, "?normalTick@ItemActor@@UEAAXXZ",
-    ItemActor* self)
+TInstanceHook(void, "?normalTick@ItemActor@@UEAAXXZ",
+              ItemActor)
 {
-    original(self);
-    if (!Config::enable || !Config::enableItemActor || !self->isRegionValid())
+    original(this);
+    if (!Config::enable || !Config::enableItemActor || !this->isRegionValid())
         return;
-    int light = Config::getBrightness(self->getItemStack());
-    auto& id = self->getUniqueID();
+    int light = Config::getBrightness(this->getItemStack());
+    auto& id = this->getUniqueID();
     if (light != 0)
-        LightMgr::turnOn(id, &self->getRegion(), self->getBlockPos(), light);
+        LightMgr::turnOn(id, &this->getRegion(), this->getBlockPos(), light);
     else
         LightMgr::turnOff(id);
 }
