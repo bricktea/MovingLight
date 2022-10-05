@@ -26,10 +26,11 @@ TClasslessInstanceHook(void, "?sendBlockDestructionStarted@BlockEventCoordinator
 
 // Remove
 
-TClasslessInstanceHook(__int64, "?requestServerShutdown@DedicatedServer@@EEAAXAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z")
+TClasslessInstanceHook(void, "?execute@StopCommand@@UEBAXAEBVCommandOrigin@@AEAVCommandOutput@@@Z",
+                       CommandOrigin * a2, void* a3)
 {
     PacketHelper::stopSending = true;
-    return original(this);
+    original(this, a2, a3);
 }
 
 TInstanceHook(ItemActor *, "??_EItemActor@@UEAAPEAXI@Z",

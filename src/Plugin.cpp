@@ -9,7 +9,7 @@ using json = nlohmann::json;
 namespace fs = filesystem;
 
 Logger logger("MovingLight");
-Version PLUGIN_VERSION { 1,8,1,Version::Release };
+Version PLUGIN_VERSION { 1,8,2,Version::Release };
 
 void PluginMain()
 {
