@@ -1,8 +1,8 @@
 #include "Plugin.h"
 
-#include "llapi/mc/ItemActor.hpp"
-#include "llapi/mc/Container.hpp"
-#include "llapi/mc/ServerPlayer.hpp"
+#include "Config.h"
+#include "PacketHelper.h"
+#include "LightMgr.h"
 
 // OffHand Helper
 
@@ -55,7 +55,7 @@ TInstanceHook(void, "?normalTick@Player@@UEAAXXZ",
     original(this);
     if (!Config::enable || !this->isRegionValid())
         return;
-    int light = max(Config::getBrightness(&this->getSelectedItem()), Config::getBrightness(&this->getOffhandSlot()));
+    auto light = max(Config::getBrightness(&this->getSelectedItem()), Config::getBrightness(&this->getOffhandSlot()));
     auto& id = this->getUniqueID();
     if (light != 0)
         LightMgr::turnOn(id, &this->getRegion(), this->getBlockPos(), light);
@@ -69,7 +69,7 @@ TInstanceHook(void, "?normalTick@ItemActor@@UEAAXXZ",
     original(this);
     if (!Config::enable || !Config::enableItemActor || !this->isRegionValid())
         return;
-    int light = Config::getBrightness(this->getItemStack());
+    auto light = Config::getBrightness(this->getItemStack());
     auto& id = this->getUniqueID();
     if (light != 0)
         LightMgr::turnOn(id, &this->getRegion(), this->getBlockPos(), light);

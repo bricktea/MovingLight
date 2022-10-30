@@ -1,5 +1,8 @@
 #include "Plugin.h"
+#include "Config.h"
+
 #include "llapi/EventAPI.h"
+
 #include <filesystem>
 
 using namespace std;
