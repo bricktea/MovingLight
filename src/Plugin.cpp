@@ -5,11 +5,12 @@
 using namespace std;
 using namespace ll;
 using json = nlohmann::json;
+#define DATA_PATH "plugins/MovingLight/"
 
 namespace fs = filesystem;
 
 Logger logger("MovingLight");
-Version PLUGIN_VERSION { 1,8,2,Version::Release };
+Version PLUGIN_VERSION { 1,8,3,Version::Release };
 
 void PluginMain()
 {
@@ -19,19 +20,19 @@ void PluginMain()
 void PluginInit()
 {
     // Read config
-    if (!fs::exists("plugins/MovingLight/")) {
+    if (!fs::exists(DATA_PATH)) {
         logger.warn("Could not find the directory for the configuration file, creating...");
-        fs::create_directory("plugins/MovingLight/");
+        fs::create_directory(DATA_PATH);
     }
-    if (!fs::exists("plugins/MovingLight/config.json")) {
+    if (!fs::exists(DATA_PATH"config.json")) {
         logger.warn("Configuration file not found, creating...");
         ofstream ofile;
-        ofile.open("plugins/MovingLight/config.json");
+        ofile.open(DATA_PATH"config.json");
         ofile << Config::to_json();
         ofile.close();
     }
     ifstream ifile;
-    ifile.open("plugins/MovingLight/config.json");
+    ifile.open(DATA_PATH"config.json");
     auto j = json::parse(ifile);
     Config::from_json(j);
     ifile.close();
