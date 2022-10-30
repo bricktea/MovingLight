@@ -31,7 +31,7 @@ void LightMgr::turnOff(ActorUniqueID id) {
     }
 }
 
-void LightMgr::turnOn(ActorUniqueID id, BlockSource *region, BlockPos bp, int lightLv) {
+void LightMgr::turnOn(ActorUniqueID id, BlockSource *region, BlockPos bp, unsigned int lightLv) {
     if (!region)
         return;
     if (!isVaild(id))

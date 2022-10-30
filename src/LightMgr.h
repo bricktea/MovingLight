@@ -31,7 +31,7 @@ namespace LightMgr {
 
     void turnOff(ActorUniqueID id);
 
-    void turnOn(ActorUniqueID id, BlockSource* region, BlockPos bp, int lightLv);
+    void turnOn(ActorUniqueID id, BlockSource* region, BlockPos bp, unsigned int lightLv);
 
     void clear(ActorUniqueID id);
 

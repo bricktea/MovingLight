@@ -23,9 +23,9 @@ namespace PacketHelper {
 
     static bool stopSending = false;
 
-    void UpdateBlockPacket(Dimension* dim, BlockPos bp, const unsigned int runtimeId, unsigned int layer = 1);
+    void UpdateBlockPacket(Dimension* dim, BlockPos bp, unsigned int runtimeId, unsigned int layer = 1);
 
-    void UpdateBlockPacket(int dimId, BlockPos bp, const unsigned int runtimeId, unsigned int layer = 1);
+    void UpdateBlockPacket(int dimId, BlockPos bp, unsigned int runtimeId, unsigned int layer = 1);
 
 }
 
