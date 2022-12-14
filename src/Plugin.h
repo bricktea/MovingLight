@@ -26,4 +26,7 @@ using json = nlohmann::json;
 
 typedef long long UniqueID;
 
+template <typename T>
+inline T* Singleton;
+
 #endif

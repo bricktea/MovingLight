@@ -3,30 +3,20 @@
 
 #include "Plugin.h"
 
-namespace PacketHelper {
+class PacketHelper {
 
-    /*
-    * UpdateBlock:
-        Flags:
-            NONE = 0
-            NEIGHBORS = 1
-            NETWORK = 2
-            ALL = 3
-            NOGRAPHIC = 4
-            PRIORITY = 8
-            ALL_PRIORITY = 11
-        DataLayer:
-            NONE = 0
-            PENETRATE = 1
-            NOUPDATE = 2
-    */
+    bool stopSending;
 
-    static bool stopSending = false;
+public:
 
-    void UpdateBlockPacket(Dimension* dim, BlockPos bp, unsigned int runtimeId, unsigned int layer = 1);
+    PacketHelper();
 
-    void UpdateBlockPacket(int dimId, BlockPos bp, unsigned int runtimeId, unsigned int layer = 1);
+    void shutdown();
 
-}
+    void UpdateBlockPacket(Dimension* dim, BlockPos bp, unsigned int runtimeId, unsigned int layer = 1) const;
+
+    void UpdateBlockPacket(int dimId, BlockPos bp, unsigned int runtimeId, unsigned int layer = 1) const;
+
+};
 
 #endif // !PACKETHELPER_H

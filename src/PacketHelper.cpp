@@ -4,7 +4,21 @@
 
 #include "PacketHelper.h"
 
-void PacketHelper::UpdateBlockPacket(Dimension *dim, BlockPos bp, const unsigned int runtimeId, unsigned int layer) {
+PacketHelper::PacketHelper() {
+
+    stopSending = false;
+
+    Singleton<PacketHelper> = this;
+
+}
+
+void PacketHelper::shutdown() {
+
+    stopSending = true;
+
+}
+
+void PacketHelper::UpdateBlockPacket(Dimension *dim, BlockPos bp, const unsigned int runtimeId, unsigned int layer) const {
     if (!dim || stopSending)
         return;
     BinaryStream wp;
@@ -19,7 +33,7 @@ void PacketHelper::UpdateBlockPacket(Dimension *dim, BlockPos bp, const unsigned
     dim->sendPacketForPosition({ bp.x, bp.y, bp.z }, *pkt, nullptr);
 }
 
-void PacketHelper::UpdateBlockPacket(int dimId, BlockPos bp, const unsigned int runtimeId, unsigned int layer) {
-    auto dim = Global<Level>->createDimension(dimId);
+void PacketHelper::UpdateBlockPacket(int dimId, BlockPos bp, const unsigned int runtimeId, unsigned int layer) const {
+    auto dim = (Dimension*)Global<Level>->getOrCreateDimension(dimId).mHandle.lock().get();
     UpdateBlockPacket(dim, bp, runtimeId);
 }

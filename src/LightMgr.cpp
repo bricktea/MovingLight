@@ -23,11 +23,11 @@ void LightMgr::turnOff(ActorUniqueID id) {
         return;
     RecordedInfo[id].mLighting = false;
     auto pos = RecordedInfo[id].mPos;
-    auto dim = Global<Level>->createDimension(RecordedInfo[id].mDimId);
+    auto dim = (Dimension*)Global<Level>->getOrCreateDimension(RecordedInfo[id].mDimId).mHandle.lock().get();
     if (dim)
     {
         auto region = &dim->getBlockSourceFromMainChunkSource();
-        PacketHelper::UpdateBlockPacket(dim, pos, region->getBlock(pos).getRuntimeId());
+        Singleton<PacketHelper>->UpdateBlockPacket(dim, pos, region->getBlock(pos).getRuntimeId());
     }
 }
 
@@ -49,7 +49,7 @@ void LightMgr::turnOn(ActorUniqueID id, BlockSource *region, BlockPos bp, unsign
         return;
 
     auto dimId = region->getDimensionId();
-    PacketHelper::UpdateBlockPacket(dimId, bp, StaticVanillaBlocks::mLightBlock->getRuntimeId() - 15 + lightLv);
+    Singleton<PacketHelper>->UpdateBlockPacket(dimId, bp, StaticVanillaBlocks::mLightBlock->getRuntimeId() - 15 + lightLv);
     if (!isSamePos && (isOpened || !isSameLight))
         turnOff(id);
 

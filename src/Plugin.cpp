@@ -1,5 +1,6 @@
 #include "Plugin.h"
 #include "Config.h"
+#include "PacketHelper.h"
 
 #include "llapi/EventAPI.h"
 
@@ -13,7 +14,7 @@ using json = nlohmann::json;
 namespace fs = filesystem;
 
 Logger logger("MovingLight");
-Version PLUGIN_VERSION { 1,8,3,Version::Release };
+Version PLUGIN_VERSION { 1,8,4,Version::Release };
 
 void PluginMain()
 {
@@ -44,6 +45,13 @@ void PluginInit()
     ll::registerPlugin("MovingLight", "The moving light.", PLUGIN_VERSION, { {"Author","RedbeanW"}, {"Github","https://github.com/Redbeanw44602/LiteLoaderMods.git"} });
     Event::ServerStartedEvent::subscribe([](Event::ServerStartedEvent ev) -> bool {
         PluginMain();
+        new PacketHelper();
+        return true;
+    });
+
+    Event::ConsoleCmdEvent::subscribe([](const Event::ConsoleCmdEvent& ev) -> bool {
+        if (ev.mCommand == "stop")
+            Singleton<PacketHelper>->shutdown();
         return true;
     });
 
