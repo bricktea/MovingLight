@@ -25,4 +25,4 @@
 using namespace std;
 using json = nlohmann::json;
 
-typedef long long UniqueID;
+using identity_t = QWORD;

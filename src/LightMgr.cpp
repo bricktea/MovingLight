@@ -7,20 +7,20 @@
 
 LightMgr lightMgr;
 
-bool LightMgr::isVaild(ActorUniqueID id) {
+bool LightMgr::isVaild(identity_t id) {
     return mRecordedInfo.count(id);
 }
 
-void LightMgr::init(ActorUniqueID id) {
+void LightMgr::init(identity_t id) {
     LightInfo li;
     mRecordedInfo[id] = li;
 }
 
-bool LightMgr::isTurningOn(ActorUniqueID id) {
+bool LightMgr::isTurningOn(identity_t id) {
     return isVaild(id) && mRecordedInfo[id].mLighting;
 }
 
-void LightMgr::turnOff(ActorUniqueID id) {
+void LightMgr::turnOff(identity_t id) {
     if (!isTurningOn(id))
         return;
     mRecordedInfo[id].mLighting = false;
@@ -33,7 +33,7 @@ void LightMgr::turnOff(ActorUniqueID id) {
     }
 }
 
-void LightMgr::turnOn(ActorUniqueID id, BlockSource *region, BlockPos bp, unsigned int lightLv) {
+void LightMgr::turnOn(identity_t id, BlockSource *region, BlockPos bp, unsigned int lightLv) {
     if (!region)
         return;
     if (!isVaild(id))
@@ -62,7 +62,7 @@ void LightMgr::turnOn(ActorUniqueID id, BlockSource *region, BlockPos bp, unsign
 
 }
 
-void LightMgr::clear(ActorUniqueID id) {
+void LightMgr::clear(identity_t id) {
     turnOff(id);
     mRecordedInfo.erase(id);
 }

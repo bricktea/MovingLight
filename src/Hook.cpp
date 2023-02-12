@@ -32,14 +32,14 @@ TClasslessInstanceHook(void, "?sendBlockDestructionStarted@BlockEventCoordinator
 TInstanceHook(ItemActor *, "??_EItemActor@@UEAAPEAXI@Z",
               ItemActor, char a2)
 {
-    lightMgr.clear(getUniqueID());
+    lightMgr.clear((identity_t)this);
     return original(this, a2);
 }
 
 TClasslessInstanceHook(void, "?_onPlayerLeft@ServerNetworkHandler@@AEAAXPEAVServerPlayer@@_N@Z",
                        ServerPlayer * sp, char a3)
 {
-    lightMgr.clear(sp->getUniqueID());
+    lightMgr.clear((identity_t)sp);
     original(this, sp, a3);
 }
 
@@ -52,11 +52,10 @@ TInstanceHook(void, "?normalTick@Player@@UEAAXXZ",
     if (!config.isEnabled() || !hasDimension())
         return;
     auto light = max(config.getBrightness(&getSelectedItem()), config.getBrightness(&getOffhandSlot()));
-    auto& id = getUniqueID();
     if (light != 0)
-        lightMgr.turnOn(id, &getRegion(), getBlockPos(), light);
+        lightMgr.turnOn((identity_t)this, &getRegion(), getBlockPos(), light);
     else
-        lightMgr.turnOff(id);
+        lightMgr.turnOff((identity_t)this);
 }
 
 TInstanceHook(void, "?normalTick@ItemActor@@UEAAXXZ",
@@ -66,9 +65,8 @@ TInstanceHook(void, "?normalTick@ItemActor@@UEAAXXZ",
     if (!config.isEnabled() || !config.isItemActorEnabled() || !hasDimension())
         return;
     auto light = config.getBrightness(getItemStack());
-    auto& id = getUniqueID();
     if (light != 0)
-        lightMgr.turnOn(id, &getRegion(), getBlockPos(), light);
+        lightMgr.turnOn((identity_t)this, &getRegion(), getBlockPos(), light);
     else
-        lightMgr.turnOff(id);
+        lightMgr.turnOff((identity_t)this);
 }

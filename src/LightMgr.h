@@ -9,17 +9,17 @@
 class LightMgr {
 public:
 
-    bool isVaild(ActorUniqueID id);
+    bool isVaild(identity_t id);
 
-    void init(ActorUniqueID id);
+    void init(identity_t id);
 
-    bool isTurningOn(ActorUniqueID id);
+    bool isTurningOn(identity_t id);
 
-    void turnOff(ActorUniqueID id);
+    void turnOff(identity_t id);
 
-    void turnOn(ActorUniqueID id, BlockSource* region, BlockPos bp, unsigned int lightLv);
+    void turnOn(identity_t id, BlockSource* region, BlockPos bp, unsigned int lightLv);
 
-    void clear(ActorUniqueID id);
+    void clear(identity_t id);
 
 private:
 
@@ -30,7 +30,7 @@ private:
         int mDimId          = -1;
     };
 
-    unordered_map<UniqueID, LightInfo> mRecordedInfo;
+    unordered_map<identity_t, LightInfo> mRecordedInfo;
     vector<string> mBannedBlocks = {
             "minecraft:lava",
             "minecraft:water",
