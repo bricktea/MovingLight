@@ -46,7 +46,7 @@ TInstanceHook(void, "?normalTick@Player@@UEAAXXZ",
               Player)
 {
     original(this);
-    if (!Config::enable || !this->isRegionValid())
+    if (!Config::enable || !this->hasDimension())
         return;
     auto light = max(Config::getBrightness(&this->getSelectedItem()), Config::getBrightness(&this->getOffhandSlot()));
     auto& id = this->getUniqueID();
@@ -60,7 +60,7 @@ TInstanceHook(void, "?normalTick@ItemActor@@UEAAXXZ",
               ItemActor)
 {
     original(this);
-    if (!Config::enable || !Config::enableItemActor || !this->isRegionValid())
+    if (!Config::enable || !Config::enableItemActor || !this->hasDimension())
         return;
     auto light = Config::getBrightness(this->getItemStack());
     auto& id = this->getUniqueID();
