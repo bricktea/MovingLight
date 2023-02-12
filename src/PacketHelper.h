@@ -1,15 +1,13 @@
-#ifndef PACKETHELPER_H
-#define PACKETHELPER_H
+//
+// Created by RedbeanW on 10/30/2022.
+//
+
+#pragma once
 
 #include "Plugin.h"
 
 class PacketHelper {
-
-    bool stopSending;
-
 public:
-
-    PacketHelper();
 
     void shutdown();
 
@@ -17,6 +15,10 @@ public:
 
     void UpdateBlockPacket(int dimId, BlockPos bp, unsigned int runtimeId, unsigned int layer = 1) const;
 
+private:
+
+    bool mShutdown = false;
+
 };
 
-#endif // !PACKETHELPER_H
+extern PacketHelper packetHelper;

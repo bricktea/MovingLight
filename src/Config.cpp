@@ -4,34 +4,44 @@
 
 #include "Config.h"
 
-bool Config::from_json(json &cfg) {
-    cfg.at("enabled").get_to(enable);
-    cfg.at("items").get_to(items);
-    cfg.at("offhand").get_to(OffHandItems);
+Config config;
+
+bool Config::fromJson(json &cfg) {
+    cfg.at("enabled").get_to(mEnabled);
+    cfg.at("items").get_to(mItems);
+    cfg.at("offhand").get_to(mOffHandItems);
     return true;
 }
 
-string Config::to_json() {
+string Config::toJson() {
     json cfg = {
-            {"version",VERSION},
-            {"enabled",enable},
-            {"items",items},
-            {"offhand",OffHandItems}
+            {"version",mVersion},
+            {"enabled",mEnabled},
+            {"items",mItems},
+            {"offhand",mOffHandItems}
     };
     return cfg.dump(4);
 }
 
 bool Config::isLightSource(const string &name) {
-    return items.count(name);
+    return mItems.count(name);
 }
 
 bool Config::isOffhandItem(const string &name) {
-    return count(OffHandItems.begin(), OffHandItems.end(), name);
+    return count(mOffHandItems.begin(), mOffHandItems.end(), name);
 }
 
 unsigned int Config::getBrightness(const ItemStack *it) {
     if (it->isNull())
         return 0;
     auto name = it->getTypeName();
-    return isLightSource(name) ? Config::items[name] : 0;
+    return isLightSource(name) ? mItems[name] : 0;
+}
+
+bool Config::isEnabled() const {
+    return mEnabled;
+}
+
+bool Config::isItemActorEnabled() const {
+    return true;
 }

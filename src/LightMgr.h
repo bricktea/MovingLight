@@ -2,26 +2,12 @@
 // Created by RedbeanW on 10/30/2022.
 //
 
-#ifndef MOVINGLIGHT_LIGHTMGR_H
-#define MOVINGLIGHT_LIGHTMGR_H
+#pragma once
 
 #include "Plugin.h"
 
-namespace LightMgr {
-
-    struct LightInfo {
-        bool mLighting = false;
-        unsigned int mLevel = 0;
-        BlockPos mPos = BlockPos::ZERO;
-        int mDimId = -1;
-    };
-
-    static unordered_map<UniqueID, LightInfo> RecordedInfo;
-    static vector<string> bannedBlocks = {
-            "minecraft:lava",
-            "minecraft:water",
-            "minecraft:snow_layer"
-    };
+class LightMgr {
+public:
 
     bool isVaild(ActorUniqueID id);
 
@@ -35,6 +21,23 @@ namespace LightMgr {
 
     void clear(ActorUniqueID id);
 
-}
+private:
 
-#endif //MOVINGLIGHT_LIGHTMGR_H
+    struct LightInfo {
+        bool mLighting      = false;
+        unsigned int mLevel = 0;
+        BlockPos mPos       = BlockPos::ZERO;
+        int mDimId          = -1;
+    };
+
+    unordered_map<UniqueID, LightInfo> mRecordedInfo;
+    vector<string> mBannedBlocks = {
+            "minecraft:lava",
+            "minecraft:water",
+            "minecraft:snow_layer"
+    };
+
+
+};
+
+extern LightMgr lightMgr;

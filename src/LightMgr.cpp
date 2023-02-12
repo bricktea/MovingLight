@@ -5,29 +5,31 @@
 #include "LightMgr.h"
 #include "PacketHelper.h"
 
+LightMgr lightMgr;
+
 bool LightMgr::isVaild(ActorUniqueID id) {
-    return RecordedInfo.count(id);
+    return mRecordedInfo.count(id);
 }
 
 void LightMgr::init(ActorUniqueID id) {
     LightInfo li;
-    RecordedInfo[id] = li;
+    mRecordedInfo[id] = li;
 }
 
 bool LightMgr::isTurningOn(ActorUniqueID id) {
-    return isVaild(id) && RecordedInfo[id].mLighting;
+    return isVaild(id) && mRecordedInfo[id].mLighting;
 }
 
 void LightMgr::turnOff(ActorUniqueID id) {
     if (!isTurningOn(id))
         return;
-    RecordedInfo[id].mLighting = false;
-    auto pos = RecordedInfo[id].mPos;
-    auto dim = (Dimension*)Global<Level>->getOrCreateDimension(RecordedInfo[id].mDimId).mHandle.lock().get();
+    mRecordedInfo[id].mLighting = false;
+    auto pos = mRecordedInfo[id].mPos;
+    auto dim = (Dimension*)Global<Level>->getOrCreateDimension(mRecordedInfo[id].mDimId).mHandle.lock().get();
     if (dim)
     {
         auto region = &dim->getBlockSourceFromMainChunkSource();
-        Singleton<PacketHelper>->UpdateBlockPacket(dim, pos, region->getBlock(pos).getRuntimeId());
+        packetHelper.UpdateBlockPacket(dim, pos, region->getBlock(pos).getRuntimeId());
     }
 }
 
@@ -36,20 +38,20 @@ void LightMgr::turnOn(ActorUniqueID id, BlockSource *region, BlockPos bp, unsign
         return;
     if (!isVaild(id))
         init(id);
-    auto& Info = RecordedInfo[id];
+    auto& Info = mRecordedInfo[id];
     bool isOpened = isTurningOn(id);
     bp.y = bp.y + 1;
-    bool isSamePos = bp.operator==(Info.mPos);
+    bool isSamePos = bp == Info.mPos;
     bool isSameLight = lightLv == Info.mLevel;
     if (isOpened && isSamePos && isSameLight)
         return;
 
     auto& name = region->getBlock(bp).getName().getString();
-    if (count(bannedBlocks.begin(), bannedBlocks.end(), name))
+    if (count(mBannedBlocks.begin(), mBannedBlocks.end(), name))
         return;
 
     auto dimId = region->getDimensionId();
-    Singleton<PacketHelper>->UpdateBlockPacket(dimId, bp, StaticVanillaBlocks::mLightBlock->getRuntimeId() - 15 + lightLv);
+    packetHelper.UpdateBlockPacket(dimId, bp, StaticVanillaBlocks::mLightBlock->getRuntimeId() - 15 + lightLv);
     if (!isSamePos && (isOpened || !isSameLight))
         turnOff(id);
 
@@ -62,5 +64,5 @@ void LightMgr::turnOn(ActorUniqueID id, BlockSource *region, BlockPos bp, unsign
 
 void LightMgr::clear(ActorUniqueID id) {
     turnOff(id);
-    RecordedInfo.erase(id);
+    mRecordedInfo.erase(id);
 }

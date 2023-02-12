@@ -1,7 +1,8 @@
-#pragma once
+//
+// Created by RedbeanW on 10/30/2022.
+//
 
-#ifndef PLUGIN_H
-#define PLUGIN_H
+#pragma once
 
 #include "llapi/mc/ItemStack.hpp"
 #include "llapi/mc/BlockSource.hpp"
@@ -25,8 +26,3 @@ using namespace std;
 using json = nlohmann::json;
 
 typedef long long UniqueID;
-
-template <typename T>
-inline T* Singleton;
-
-#endif

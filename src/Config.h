@@ -2,18 +2,33 @@
 // Created by RedbeanW on 10/30/2022.
 //
 
-#ifndef MOVINGLIGHT_CONFIG_H
-#define MOVINGLIGHT_CONFIG_H
+#pragma once
 
 #include "Plugin.h"
 
-namespace Config {
+class Config {
+public:
 
-    static bool enable = true;
-    static bool enableItemActor = true;
-    static unsigned int VERSION = 100;
+    bool fromJson(json& cfg);
 
-    static unordered_map<string, unsigned int> items = {
+    string toJson();
+
+    bool isLightSource(const string& name);
+
+    bool isOffhandItem(const string& name);
+
+    bool isEnabled() const;
+
+    bool isItemActorEnabled() const;
+
+    unsigned int getBrightness(const ItemStack* it);
+
+private:
+
+    bool mEnabled = true;
+    unsigned int mVersion = 100;
+
+    unordered_map<string, unsigned int> mItems = {
             {"minecraft:beacon",15},            // 信标
             {"minecraft:campfire",15},          // 营火
             {"minecraft:soul_campfire",10},     // 灵魂营火
@@ -40,7 +55,7 @@ namespace Config {
             {"minecraft:lava_bucket",15}        // 熔岩桶
     };
 
-    static vector<string> OffHandItems = {
+    vector<string> mOffHandItems = {
             "minecraft:campfire",
             "minecraft:soul_campfire",
             "minecraft:lit_pumpkin",
@@ -60,16 +75,6 @@ namespace Config {
             "minecraft:lava_bucket"
     };
 
-    bool from_json(json& cfg);
+};
 
-    string to_json();
-
-    bool isLightSource(const string& name);
-
-    bool isOffhandItem(const string& name);
-
-    unsigned int getBrightness(const ItemStack* it);
-
-}
-
-#endif //MOVINGLIGHT_CONFIG_H
+extern Config config;

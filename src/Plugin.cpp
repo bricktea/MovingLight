@@ -1,3 +1,7 @@
+//
+// Created by RedbeanW on 10/30/2022.
+//
+
 #include "Plugin.h"
 #include "Config.h"
 #include "PacketHelper.h"
@@ -32,13 +36,13 @@ void PluginInit()
         logger.warn("Configuration file not found, creating...");
         ofstream ofile;
         ofile.open(DATA_PATH"config.json");
-        ofile << Config::to_json();
+        ofile << config.toJson();
         ofile.close();
     }
     ifstream ifile;
     ifile.open(DATA_PATH"config.json");
     auto j = json::parse(ifile);
-    Config::from_json(j);
+    config.fromJson(j);
     ifile.close();
     
     // Register plugin to LL.
@@ -51,7 +55,7 @@ void PluginInit()
 
     Event::ConsoleCmdEvent::subscribe([](const Event::ConsoleCmdEvent& ev) -> bool {
         if (ev.mCommand == "stop")
-            Singleton<PacketHelper>->shutdown();
+            packetHelper.shutdown();
         return true;
     });
 

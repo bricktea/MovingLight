@@ -4,22 +4,16 @@
 
 #include "PacketHelper.h"
 
-PacketHelper::PacketHelper() {
-
-    stopSending = false;
-
-    Singleton<PacketHelper> = this;
-
-}
+PacketHelper packetHelper;
 
 void PacketHelper::shutdown() {
 
-    stopSending = true;
+    mShutdown = true;
 
 }
 
 void PacketHelper::UpdateBlockPacket(Dimension *dim, BlockPos bp, const unsigned int runtimeId, unsigned int layer) const {
-    if (!dim || stopSending)
+    if (!dim || mShutdown)
         return;
     BinaryStream wp;
     wp.writeVarInt(bp.x);
