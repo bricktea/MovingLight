@@ -58,7 +58,7 @@ TInstanceHook(void, "?normalTick@Player@@UEAAXXZ",
         lightMgr.turnOff((identity_t)this);
 }
 
-TInstanceHook(void, "?normalTick@ItemActor@@UEAAXXZ",
+TInstanceHook(void, "?postNormalTick@ItemActor@@QEAAXXZ",
               ItemActor)
 {
     original(this);
