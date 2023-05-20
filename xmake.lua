@@ -27,7 +27,8 @@ target(PROJECT_NAME)
         '/NODEFAULTLIB:msvcrt.lib')
     add_includedirs(
         BDS_DIRECTORY..'SDK/include',
-        'src')
+        'src',
+        'include')
     add_defines(
         'NDEBUG',
         'WIN32_LEAN_AND_MEAN',
