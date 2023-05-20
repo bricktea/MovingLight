@@ -18,15 +18,13 @@ using json = nlohmann::json;
 namespace fs = filesystem;
 
 Logger logger("MovingLight");
-Version PLUGIN_VERSION { 1,9,2,Version::Release };
+Version PLUGIN_VERSION { 1, 9, 2, Version::Release };
 
-void PluginMain()
-{
+void PluginMain() {
     logger.info("loaded, ver " + PLUGIN_VERSION.toString() + ", author: redbeanw.");
 }
 
-void PluginInit()
-{
+void PluginInit() {
     // Read config
     if (!fs::exists(DATA_PATH)) {
         logger.warn("Could not find the directory for the configuration file, creating...");
@@ -46,7 +44,12 @@ void PluginInit()
     ifile.close();
     
     // Register plugin to LL.
-    ll::registerPlugin("MovingLight", "The moving light.", PLUGIN_VERSION, { {"Author","RedbeanW"}, {"Github","https://github.com/Redbeanw44602/LiteLoaderMods.git"} });
+
+    ll::registerPlugin("MovingLight", "The moving light.", PLUGIN_VERSION, {
+        {"Author","RedbeanW"},
+        {"Github","https://github.com/Redbeanw44602/LiteLoaderMods.git"}
+    });
+
     Event::ServerStartedEvent::subscribe([](Event::ServerStartedEvent ev) -> bool {
         PluginMain();
         new PacketHelper();

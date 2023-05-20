@@ -15,10 +15,10 @@ bool Config::fromJson(json &cfg) {
 
 string Config::toJson() {
     json cfg = {
-            {"version",mVersion},
-            {"enabled",mEnabled},
-            {"items",mItems},
-            {"offhand",mOffHandItems}
+            {"version", mVersion},
+            {"enabled", mEnabled},
+            {"items", mItems},
+            {"offhand", mOffHandItems}
     };
     return cfg.dump(4);
 }

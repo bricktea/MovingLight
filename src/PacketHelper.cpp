@@ -6,12 +6,6 @@
 
 PacketHelper packetHelper;
 
-void PacketHelper::shutdown() {
-
-    mShutdown = true;
-
-}
-
 void PacketHelper::UpdateBlockPacket(Dimension *dim, BlockPos bp, const unsigned int runtimeId, unsigned int layer) const {
     if (!dim || mShutdown)
         return;
@@ -30,4 +24,8 @@ void PacketHelper::UpdateBlockPacket(Dimension *dim, BlockPos bp, const unsigned
 void PacketHelper::UpdateBlockPacket(int dimId, BlockPos bp, const unsigned int runtimeId, unsigned int layer) const {
     auto dim = (Dimension*)Global<Level>->getOrCreateDimension(dimId).mHandle.lock().get();
     UpdateBlockPacket(dim, bp, runtimeId);
+}
+
+void PacketHelper::shutdown() {
+    mShutdown = true;
 }

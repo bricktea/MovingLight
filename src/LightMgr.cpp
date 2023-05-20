@@ -26,8 +26,7 @@ void LightMgr::turnOff(identity_t id) {
     mRecordedInfo[id].mLighting = false;
     auto pos = mRecordedInfo[id].mPos;
     auto dim = (Dimension*)Global<Level>->getOrCreateDimension(mRecordedInfo[id].mDimId).mHandle.lock().get();
-    if (dim)
-    {
+    if (dim) {
         auto region = &dim->getBlockSourceFromMainChunkSource();
         packetHelper.UpdateBlockPacket(dim, pos, region->getBlock(pos).getRuntimeId());
     }
