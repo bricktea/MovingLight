@@ -28,7 +28,7 @@ void LightMgr::turnOff(identity_t id) {
     auto dim = (Dimension*)Global<Level>->getOrCreateDimension(mRecordedInfo[id].mDimId).mHandle.lock().get();
     if (dim) {
         auto region = &dim->getBlockSourceFromMainChunkSource();
-        packetHelper.UpdateBlockPacket(dim, pos, region->getBlock(pos).getRuntimeId());
+        packetHelper.UpdateBlockPacket(dim, pos, region->getBlock(pos).getRuntimeId(), BlockUpdateNoGraphics);
     }
 }
 
@@ -50,7 +50,7 @@ void LightMgr::turnOn(identity_t id, BlockSource *region, BlockPos bp, unsigned 
         return;
 
     auto dimId = region->getDimensionId();
-    packetHelper.UpdateBlockPacket(dimId, bp, StaticVanillaBlocks::mLightBlock->getRuntimeId() - 15 + lightLv);
+    packetHelper.UpdateBlockPacket(dimId, bp, StaticVanillaBlocks::mLightBlock->getRuntimeId() - 15 + lightLv, BlockUpdateNoGraphics);
     if (!isSamePos && (isOpened || !isSameLight))
         turnOff(id);
 
