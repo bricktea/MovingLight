@@ -119,7 +119,7 @@ void Config::_computeLightBlocks() {
     });
     size_t afterLightBlocks = mItems.size();
     if (afterLightBlocks - beforeLightBlocks > 0) {
-        logger.warn("{} new glowing blocks have been discovered!", afterLightBlocks - beforeLightBlocks);
+        logger.warn("{} new glowing block(s) have been discovered!", afterLightBlocks - beforeLightBlocks);
         _save();
     }
 }
