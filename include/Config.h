@@ -6,56 +6,57 @@
 
 #include "Plugin.h"
 
+#include "Nlohmann/json.hpp"
+
+#include "llapi/EventAPI.h"
+#include "llapi/mc/HashedString.hpp"
+#include "llapi/mc/ItemStack.hpp"
+
+using json = nlohmann::json;
+
 class Config {
 public:
 
-    bool fromJson(json& cfg);
+    explicit Config() noexcept;
 
-    string toJson();
+    void loadFromFile(const string& path);
 
-    bool isLightSource(const string& name);
+    [[nodiscard]] bool isLightSource(const HashedString& name);
 
-    bool isOffhandItem(const string& name);
+    [[nodiscard]] bool isOffhandItem(const HashedString& name);
 
-    bool isEnabled() const;
+    [[nodiscard]] bool isEnabled() const;
 
-    bool isItemActorEnabled() const;
+    [[nodiscard]] bool isItemActorEnabled() const;
 
-    unsigned int getBrightness(const ItemStack* it);
+    [[nodiscard]] unsigned int getBrightness(const ItemStack* it);
 
 private:
 
+    bool _fromJson(json& cfg);
+
+    [[nodiscard]] string _toString();
+
+    // Call after read is complete.
+    void _computeLightBlocks();
+
+    void _update(json& cfg);
+
+    void _save();
+
+private:
+
+    std::string mPath;
+
+    const unsigned int mVersion = 200;
+
     bool mEnabled = true;
-    unsigned int mVersion = 100;
+    bool mEnableItemActor = true;
+    bool mAutoDiscoverGlowingBlock = true;
 
-    unordered_map<string, unsigned int> mItems = {
-            {"minecraft:beacon", 15},            // 信标
-            {"minecraft:campfire", 15},          // 营火
-            {"minecraft:soul_campfire", 10},     // 灵魂营火
-            {"minecraft:glowstone", 15},         // 荧石
-            {"minecraft:lit_pumpkin", 15},       // 南瓜灯
-            {"minecraft:sealantern", 15},        // 海晶灯
-            {"minecraft:lantern", 15},           // 灯笼
-            {"minecraft:soul_lantern", 10},      // 灵魂灯笼
-            {"minecraft:shroomlight", 15},       // 菌光体
-            {"minecraft:end_rod", 14},           // 末地烛
-            {"minecraft:torch", 14},             // 火把
-            {"minecraft:soul_torch", 10},        // 灵魂火把
-            {"minecraft:underwater_torch", 14},  // 水下火把
-            {"minecraft:colored_torch_rg", 14},  // 彩色火把[红/绿]
-            {"minecraft:colored_torch_bp", 14},  // 彩色火把[蓝/紫]
-            {"minecraft:glow_berries", 14},      // 发光浆果
-            {"minecraft:crying_obsidian", 10},   // 哭泣的黑曜石
-            {"minecraft:enchanting_table", 7},   // 附魔台
-            {"minecraft:ender_chest", 7},        // 末影箱
-            {"minecraft:redstone_torch", 7},     // 红石火把
-            {"minecraft:sculk_catalyst", 6},     // Sculk Catalyst
-            {"minecraft:large_amethyst_bud", 4}, // 大型紫晶芽
-            {"minecraft:amethyst_cluster", 5},   // 紫水晶簇
-            {"minecraft:lava_bucket", 15}        // 熔岩桶
-    };
+    std::unordered_map<HashedString, unsigned int> mItems;
 
-    vector<string> mOffHandItems = {
+    vector<HashedString> mOffHandItems = {
             "minecraft:campfire",
             "minecraft:soul_campfire",
             "minecraft:lit_pumpkin",

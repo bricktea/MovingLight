@@ -7,10 +7,14 @@
 #include "Config.h"
 #include "LightMgr.h"
 
+#include "llapi/mc/Player.hpp"
+#include "llapi/mc/Container.hpp"
+#include "llapi/mc/ItemActor.hpp"
+
 // OffHand Helper
 
 TClasslessInstanceHook(void, "?sendBlockDestructionStarted@BlockEventCoordinator@@QEAAXAEAVPlayer@@AEBVBlockPos@@@Z",
-                       Player * pl, BlockPos * bp) {
+                       Player* pl, BlockPos* bp) {
     original(this, pl, bp);
     if (!config.isEnabled())
         return;
@@ -34,7 +38,7 @@ TInstanceHook(ItemActor *, "??_EItemActor@@UEAAPEAXI@Z",
 }
 
 TClasslessInstanceHook(void, "?_onPlayerLeft@ServerNetworkHandler@@AEAAXPEAVServerPlayer@@_N@Z",
-                       ServerPlayer * sp, char a3) {
+                       ServerPlayer* sp, char a3) {
     lightMgr.clear((identity_t)sp);
     original(this, sp, a3);
 }
@@ -46,9 +50,9 @@ TInstanceHook(void, "?normalTick@Player@@UEAAXXZ",
     original(this);
     if (!config.isEnabled() || !hasDimension())
         return;
-    auto light = max(config.getBrightness(&getSelectedItem()), config.getBrightness(&getOffhandSlot()));
+    auto light = std::max(config.getBrightness(&getSelectedItem()), config.getBrightness(&getOffhandSlot()));
     if (light != 0)
-        lightMgr.turnOn((identity_t)this, &getRegion(), getBlockPos(), light);
+        lightMgr.turnOn((identity_t)this, &getDimension(), getBlockPos(), light);
     else
         lightMgr.turnOff((identity_t)this);
 }
@@ -60,7 +64,7 @@ TInstanceHook(void, "?postNormalTick@ItemActor@@QEAAXXZ",
         return;
     auto light = config.getBrightness(getItemStack());
     if (light != 0)
-        lightMgr.turnOn((identity_t)this, &getRegion(), getBlockPos(), light);
+        lightMgr.turnOn((identity_t)this, &getDimension(), getBlockPos(), light);
     else
         lightMgr.turnOff((identity_t)this);
 }

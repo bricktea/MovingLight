@@ -5,10 +5,14 @@
 #include "LightMgr.h"
 #include "PacketHelper.h"
 
+#include "llapi/mc/Material.hpp"
+#include "llapi/mc/StaticVanillaBlocks.hpp"
+#include "llapi/mc/Level.hpp"
+
 LightMgr lightMgr;
 
 bool LightMgr::isVaild(identity_t id) {
-    return mRecordedInfo.count(id);
+    return mRecordedInfo.find(id) != mRecordedInfo.end();
 }
 
 void LightMgr::init(identity_t id) {
@@ -25,39 +29,34 @@ void LightMgr::turnOff(identity_t id) {
         return;
     mRecordedInfo[id].mLighting = false;
     auto pos = mRecordedInfo[id].mPos;
-    auto dim = (Dimension*)Global<Level>->getOrCreateDimension(mRecordedInfo[id].mDimId).mHandle.lock().get();
+    auto dim = Global<Level>->getDimension(mRecordedInfo[id].mDimId).get();
     if (dim) {
-        auto region = &dim->getBlockSourceFromMainChunkSource();
-        packetHelper.UpdateBlockPacket(dim, pos, region->getBlock(pos).getRuntimeId(), BlockUpdateNoGraphics);
+        packetHelper.UpdateBlockPacket(dim, pos, dim->getBlockSourceFromMainChunkSource().getBlock(pos).getRuntimeId(), BlockUpdateNoGraphics);
     }
 }
 
-void LightMgr::turnOn(identity_t id, BlockSource *region, BlockPos bp, unsigned int lightLv) {
-    if (!region)
-        return;
-    if (!isVaild(id))
-        init(id);
-    auto& Info = mRecordedInfo[id];
+void LightMgr::turnOn(identity_t id, Dimension* dim, BlockPos bp, unsigned int lightLv) {
+    if (!dim) return;
+    if (!isVaild(id)) init(id);
+    auto& rec = mRecordedInfo[id];
     bool isOpened = isTurningOn(id);
     bp.y = bp.y + 1;
-    bool isSamePos = bp == Info.mPos;
-    bool isSameLight = lightLv == Info.mLevel;
+    bool isSamePos = bp == rec.mPos;
+    bool isSameLight = lightLv == rec.mLevel;
     if (isOpened && isSamePos && isSameLight)
         return;
 
-    auto& name = region->getBlock(bp).getName().getString();
-    if (count(mBannedBlocks.begin(), mBannedBlocks.end(), name))
-        return;
+    auto& blk = dim->getBlockSourceFromMainChunkSource().getBlock(bp);
+    if (std::find(mBannedBlocks.begin(), mBannedBlocks.end(), blk.getName()) != mBannedBlocks.end()) return;
 
-    auto dimId = region->getDimensionId();
-    packetHelper.UpdateBlockPacket(dimId, bp, StaticVanillaBlocks::mLightBlock->getRuntimeId() - 15 + lightLv, BlockUpdateNoGraphics);
+    packetHelper.UpdateBlockPacket(dim, bp, StaticVanillaBlocks::mLightBlock->getRuntimeId() - 15 + lightLv, BlockUpdateNoGraphics);
     if (!isSamePos && (isOpened || !isSameLight))
         turnOff(id);
 
-    Info.mLighting = true;
-    Info.mDimId = dimId;
-    Info.mPos = bp;
-    Info.mLevel = lightLv;
+    rec.mLighting = true;
+    rec.mDimId = dim->getDimensionId();
+    rec.mPos = bp;
+    rec.mLevel = lightLv;
 
 }
 

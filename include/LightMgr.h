@@ -6,18 +6,23 @@
 
 #include "Plugin.h"
 
+#include "llapi/mc/BlockSource.hpp"
+#include "llapi/mc/HashedString.hpp"
+
+using identity_t = QWORD;
+
 class LightMgr {
 public:
 
-    bool isVaild(identity_t id);
+    [[nodiscard]] bool isVaild(identity_t id);
 
     void init(identity_t id);
 
-    bool isTurningOn(identity_t id);
+    [[nodiscard]] bool isTurningOn(identity_t id);
 
     void turnOff(identity_t id);
 
-    void turnOn(identity_t id, BlockSource* region, BlockPos bp, unsigned int lightLv);
+    void turnOn(identity_t id, Dimension* dim, BlockPos bp, unsigned int lightLv);
 
     void clear(identity_t id);
 
@@ -30,11 +35,44 @@ private:
         int mDimId          = -1;
     };
 
-    unordered_map<identity_t, LightInfo> mRecordedInfo;
-    vector<string> mBannedBlocks = {
+    std::unordered_map<identity_t, LightInfo> mRecordedInfo;
+    const vector<HashedString> mBannedBlocks = {
             "minecraft:lava",
             "minecraft:water",
-            "minecraft:snow_layer"
+            //"minecraft:snow_layer",
+            "standing_sign",
+            "spruce_standing_sign",
+            "birch_standing_sign",
+            "jungle_standing_sign",
+            "acacia_standing_sign",
+            "darkoak_standing_sign",
+            "mangrove_standing_sign",
+            "cherry_standing_sign",
+            "bamboo_standing_sign",
+            "crimson_standing_sign",
+            "warped_standing_sign",
+            "wall_sign",
+            "spruce_wall_sign",
+            "birch_wall_sign",
+            "jungle_wall_sign",
+            "acacia_wall_sign",
+            "darkoak_wall_sign",
+            "mangrove_wall_sign",
+            "cherry_wall_sign",
+            "bamboo_wall_sign",
+            "crimson_wall_sign",
+            "warped_wall_sign",
+            "oak_hanging_sign",
+            "spruce_hanging_sign",
+            "birch_hanging_sign",
+            "jungle_hanging_sign",
+            "acacia_hanging_sign",
+            "dark_oak_hanging_sign",
+            "mangrove_hanging_sign",
+            "cherry_hanging_sign",
+            "bamboo_hanging_sign",
+            "crimson_hanging_sign",
+            "warped_hanging_sign"
     };
 
 
