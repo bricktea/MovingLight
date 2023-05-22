@@ -8,15 +8,18 @@
 
 #include "llapi/mc/BlockSource.hpp"
 #include "llapi/mc/HashedString.hpp"
+#include "llapi/mc/Tick.hpp"
 
 using identity_t = QWORD;
 
 class LightMgr {
 public:
 
-    [[nodiscard]] bool isVaild(identity_t id);
+    explicit LightMgr() noexcept;
 
     void init(identity_t id);
+
+    [[nodiscard]] bool isVaild(identity_t id);
 
     [[nodiscard]] bool isTurningOn(identity_t id);
 
@@ -26,7 +29,15 @@ public:
 
     void clear(identity_t id);
 
+    void markBadArea(BlockSource& region, const BlockPos& pos);
+
 private:
+
+    void _runBadAreaJanitor();
+
+    bool _isBadArea(const BlockSource& region, const BlockPos& pos);
+
+    CsLock mBadAreaLocker;
 
     struct LightInfo {
         bool mLighting      = false;
@@ -34,6 +45,8 @@ private:
         BlockPos mPos       = BlockPos::ZERO;
         int mDimId          = -1;
     };
+
+    std::unordered_map<int, std::unordered_map<BlockPos, unsigned long long>> mBadAreas;
 
     std::unordered_map<identity_t, LightInfo> mRecordedInfo;
     const vector<HashedString> mBannedBlocks = {
