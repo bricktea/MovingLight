@@ -9,7 +9,6 @@
 
 #include "llapi/mc/Player.hpp"
 #include "llapi/mc/Container.hpp"
-#include "llapi/mc/ItemActor.hpp"
 
 // OffHand Helper
 
@@ -19,10 +18,10 @@ TClasslessInstanceHook(void, "?sendBlockDestructionStarted@BlockEventCoordinator
     if (!config.isEnabled())
         return;
     auto mainHand = &pl->getSelectedItem();
-    if (mainHand->isNull() || !config.isOffhandItem(mainHand->getTypeName()))
+    if (mainHand->isNull() || !config.isOffhandItem(mainHand->getFullNameHash()))
         return;
     auto newHand = mainHand->clone_s();
-    if (config.isLightSource(newHand->getTypeName()) && pl->getOffhandSlot().isNull()) {
+    if (config.isLightSource(newHand->getFullNameHash()) && pl->getOffhandSlot().isNull()) {
         pl->getInventory().removeItem_s(pl->getSelectedItemSlot(), mainHand->getCount());
         pl->setOffhandSlot(*newHand);
         pl->sendInventory(mainHand);

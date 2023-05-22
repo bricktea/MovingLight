@@ -16,7 +16,7 @@ enum BlockUpdateFlags {
 };
 
 enum BlockUpdateLayer {
-    BlockUpdateDefault,
+    BlockUpdateDefault = 1,
     BlockUpdateLiquid
 };
 
