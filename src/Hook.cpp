@@ -36,10 +36,10 @@ TInstanceHook(ItemActor *, "??_EItemActor@@UEAAPEAXI@Z",
     return original(this, a2);
 }
 
-TClasslessInstanceHook(void, "?_onPlayerLeft@ServerNetworkHandler@@AEAAXPEAVServerPlayer@@_N@Z",
-                       ServerPlayer* sp, char a3) {
-    lightMgr.clear((identity_t)sp);
-    original(this, sp, a3);
+TInstanceHook(void, "??1Player@@UEAA@XZ",
+              Player) {
+    lightMgr.clear((identity_t)this);
+    original(this);
 }
 
 // Tick
