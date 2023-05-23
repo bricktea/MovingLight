@@ -29,13 +29,13 @@ public:
 
     [[nodiscard]] bool isItemActorEnabled() const;
 
-    [[nodiscard]] unsigned int getBrightness(const ItemStack* it);
+    [[nodiscard]] unsigned int getBrightness(const ItemStack& it);
 
 private:
 
     bool _fromJson(json& cfg);
 
-    [[nodiscard]] string _toString();
+    [[nodiscard]] std::string _toString();
 
     // Call after read is complete.
     void _computeLightBlocks();

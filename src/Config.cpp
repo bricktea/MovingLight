@@ -100,9 +100,9 @@ bool Config::isOffhandItem(const HashedString& name) {
     return std::find(mOffHandItems.begin(), mOffHandItems.end(), name) != mOffHandItems.end();
 }
 
-unsigned int Config::getBrightness(const ItemStack* item) {
-    if (item->isNull()) return 0;
-    auto& name = item->getFullNameHash();
+unsigned int Config::getBrightness(const ItemStack& item) {
+    if (item.isNull()) return 0;
+    auto& name = item.getFullNameHash();
     return isLightSource(name) ? mItems[name] : 0;
 }
 

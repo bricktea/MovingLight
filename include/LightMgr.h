@@ -25,7 +25,7 @@ public:
 
     void turnOff(identity_t id);
 
-    void turnOn(identity_t id, Dimension* dim, BlockPos bp, unsigned int lightLv);
+    void turnOn(identity_t id, Dimension& dim, BlockPos bp, unsigned int lightLv);
 
     void clear(identity_t id);
 

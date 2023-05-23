@@ -25,7 +25,7 @@ public:
 
     void shutdown();
 
-    void UpdateBlockPacket(Dimension* dim, BlockPos bp, unsigned int runtimeId, BlockUpdateFlags flag = BlockUpdateNetwork, BlockUpdateLayer layer = BlockUpdateDefault) const;
+    void UpdateBlockPacket(Dimension& dim, const BlockPos& bp, unsigned int runtimeId, BlockUpdateFlags flag = BlockUpdateNetwork, BlockUpdateLayer layer = BlockUpdateDefault) const;
 
 private:
 

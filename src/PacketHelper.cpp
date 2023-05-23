@@ -12,9 +12,8 @@
 
 PacketHelper packetHelper;
 
-void PacketHelper::UpdateBlockPacket(Dimension *dim, BlockPos bp, const unsigned int runtimeId, BlockUpdateFlags flag, BlockUpdateLayer layer) const {
-    if (!dim || mShutdown)
-        return;
+void PacketHelper::UpdateBlockPacket(Dimension& dim, const BlockPos& bp, const unsigned int runtimeId, BlockUpdateFlags flag, BlockUpdateLayer layer) const {
+    if (mShutdown) return;
     BinaryStream wp;
     wp.writeVarInt(bp.x);
     wp.writeUnsignedVarInt(bp.y);
@@ -24,7 +23,7 @@ void PacketHelper::UpdateBlockPacket(Dimension *dim, BlockPos bp, const unsigned
     wp.writeUnsignedVarInt((unsigned int)layer);
     std::shared_ptr<Packet> pkt = MinecraftPackets::createPacket(MinecraftPacketIds::UpdateBlock);
     pkt->read(wp);
-    dim->sendPacketForPosition({ bp.x, bp.y, bp.z }, *pkt, nullptr);
+    dim.sendPacketForPosition(bp, *pkt, nullptr);
 }
 
 void PacketHelper::shutdown() {

@@ -6,8 +6,6 @@
 #include "Config.h"
 #include "PacketHelper.h"
 
-#include "llapi/EventAPI.h"
-
 #include <filesystem>
 
 using namespace ll;

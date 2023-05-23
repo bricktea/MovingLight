@@ -36,33 +36,30 @@ void LightMgr::turnOff(identity_t id) {
     auto pos = mRecordedInfo[id].mPos;
     auto dim = Global<Level>->getDimension(mRecordedInfo[id].mDimId).get();
     if (dim) {
-        packetHelper.UpdateBlockPacket(dim, pos, dim->getBlockSourceFromMainChunkSource().getBlock(pos).getRuntimeId(), BlockUpdateNoGraphics);
+        packetHelper.UpdateBlockPacket(*dim, pos, dim->getBlockSourceFromMainChunkSource().getBlock(pos).getRuntimeId(), BlockUpdateNoGraphics);
     }
 }
 
-void LightMgr::turnOn(identity_t id, Dimension* dim, BlockPos bp, unsigned int lightLv) {
-    if (!dim) return;
+void LightMgr::turnOn(identity_t id, Dimension& dim, BlockPos bp, unsigned int lightLv) {
     if (!isValid(id)) init(id);
     auto& rec = mRecordedInfo[id];
     bool isOpened = isTurningOn(id);
     bp.y = bp.y + 1;
     bool isSamePos = bp == rec.mPos;
     bool isSameLight = lightLv == rec.mLevel;
-    if (isOpened && isSamePos && isSameLight)
-        return;
+    if (isOpened && isSamePos && isSameLight) return;
 
-    auto& region = dim->getBlockSourceFromMainChunkSource();
+    auto& region = dim.getBlockSourceFromMainChunkSource();
     if (_isBadArea(region, bp)) return;
 
     auto& blk = region.getBlock(bp);
     if (std::find(mBannedBlocks.begin(), mBannedBlocks.end(), blk.getName()) != mBannedBlocks.end()) return;
 
     packetHelper.UpdateBlockPacket(dim, bp, StaticVanillaBlocks::mLightBlock->getRuntimeId() - 15 + lightLv, BlockUpdateNoGraphics);
-    if (!isSamePos && (isOpened || !isSameLight))
-        turnOff(id);
+    if (!isSamePos && (isOpened || !isSameLight)) turnOff(id);
 
     rec.mLighting = true;
-    rec.mDimId = dim->getDimensionId();
+    rec.mDimId = dim.getDimensionId();
     rec.mPos = bp;
     rec.mLevel = lightLv;
 
@@ -107,8 +104,7 @@ bool LightMgr::_isBadArea(const BlockSource &region, const BlockPos &pos) {
 }
 
 TClasslessInstanceHook(bool, "?shouldStopFalling@TopSnowBlock@@UEBA_NAEAVActor@@@Z",
-                       Actor * a2)
-{
+                       Actor* a2) {
     auto ret = original(this, a2);
     if (ret) {
         lightMgr.markBadArea(a2->getRegion(), a2->getBlockPos());

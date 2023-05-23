@@ -15,11 +15,9 @@
 TClasslessInstanceHook(void, "?sendBlockDestructionStarted@BlockEventCoordinator@@QEAAXAEAVPlayer@@AEBVBlockPos@@@Z",
                        Player* pl, BlockPos* bp) {
     original(this, pl, bp);
-    if (!config.isEnabled())
-        return;
+    if (!config.isEnabled()) return;
     auto mainHand = &pl->getSelectedItem();
-    if (mainHand->isNull() || !config.isOffhandItem(mainHand->getFullNameHash()))
-        return;
+    if (mainHand->isNull() || !config.isOffhandItem(mainHand->getFullNameHash())) return;
     auto newHand = mainHand->clone_s();
     if (config.isLightSource(newHand->getFullNameHash()) && pl->getOffhandSlot().isNull()) {
         pl->getInventory().removeItem_s(pl->getSelectedItemSlot(), mainHand->getCount());
@@ -49,9 +47,9 @@ TInstanceHook(void, "?normalTick@Player@@UEAAXXZ",
     original(this);
     if (!config.isEnabled() || !hasDimension())
         return;
-    auto light = std::max(config.getBrightness(&getSelectedItem()), config.getBrightness(&getOffhandSlot()));
+    auto light = std::max(config.getBrightness(getSelectedItem()), config.getBrightness(getOffhandSlot()));
     if (light != 0)
-        lightMgr.turnOn((identity_t)this, &getDimension(), getBlockPos(), light);
+        lightMgr.turnOn((identity_t)this, getDimension(), getBlockPos(), light);
     else
         lightMgr.turnOff((identity_t)this);
 }
@@ -59,11 +57,13 @@ TInstanceHook(void, "?normalTick@Player@@UEAAXXZ",
 TInstanceHook(void, "?postNormalTick@ItemActor@@QEAAXXZ",
               ItemActor) {
     original(this);
-    if (!config.isEnabled() || !config.isItemActorEnabled() || !hasDimension())
-        return;
-    auto light = config.getBrightness(getItemStack());
-    if (light != 0)
-        lightMgr.turnOn((identity_t)this, &getDimension(), getBlockPos(), light);
-    else
+    if (!config.isEnabled() || !config.isItemActorEnabled() || !hasDimension()) return;
+    auto item = getItemStack();
+    if (!item) return;
+    auto light = config.getBrightness(*item);
+    if (light != 0) {
+        lightMgr.turnOn((identity_t)this, getDimension(), getBlockPos(), light);
+    } else {
         lightMgr.turnOff((identity_t)this);
+    }
 }
