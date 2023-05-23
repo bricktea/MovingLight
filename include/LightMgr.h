@@ -19,7 +19,7 @@ public:
 
     void init(identity_t id);
 
-    [[nodiscard]] bool isVaild(identity_t id);
+    [[nodiscard]] bool isValid(identity_t id);
 
     [[nodiscard]] bool isTurningOn(identity_t id);
 

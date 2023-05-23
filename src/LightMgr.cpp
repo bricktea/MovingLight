@@ -16,7 +16,7 @@ LightMgr::LightMgr() noexcept {
     Schedule::repeat([this] { _runBadAreaJanitor(); }, 20);
 }
 
-bool LightMgr::isVaild(identity_t id) {
+bool LightMgr::isValid(identity_t id) {
     return mRecordedInfo.find(id) != mRecordedInfo.end();
 }
 
@@ -26,7 +26,7 @@ void LightMgr::init(identity_t id) {
 }
 
 bool LightMgr::isTurningOn(identity_t id) {
-    return isVaild(id) && mRecordedInfo[id].mLighting;
+    return isValid(id) && mRecordedInfo[id].mLighting;
 }
 
 void LightMgr::turnOff(identity_t id) {
@@ -42,7 +42,7 @@ void LightMgr::turnOff(identity_t id) {
 
 void LightMgr::turnOn(identity_t id, Dimension* dim, BlockPos bp, unsigned int lightLv) {
     if (!dim) return;
-    if (!isVaild(id)) init(id);
+    if (!isValid(id)) init(id);
     auto& rec = mRecordedInfo[id];
     bool isOpened = isTurningOn(id);
     bp.y = bp.y + 1;
