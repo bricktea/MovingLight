@@ -10,7 +10,19 @@
 #include "llapi/mc/Packet.hpp"
 #include "llapi/mc/Level.hpp"
 
+#include "llapi/EventAPI.h"
+
 PacketHelper packetHelper;
+
+PacketHelper::PacketHelper() noexcept {
+
+    Event::ConsoleCmdEvent::subscribe([&](const Event::ConsoleCmdEvent& ev) -> bool {
+        if (ev.mCommand == "stop") _shutdown();
+        return true;
+    });
+
+}
+
 
 void PacketHelper::UpdateBlockPacket(Dimension& dim, const BlockPos& bp, const unsigned int runtimeId, BlockUpdateFlags flag, BlockUpdateLayer layer) const {
     if (mShutdown) return;
@@ -19,13 +31,13 @@ void PacketHelper::UpdateBlockPacket(Dimension& dim, const BlockPos& bp, const u
     wp.writeUnsignedVarInt(bp.y);
     wp.writeVarInt(bp.z);
     wp.writeUnsignedVarInt(runtimeId);
-    wp.writeUnsignedVarInt((unsigned int)flag);
-    wp.writeUnsignedVarInt((unsigned int)layer);
+    wp.writeUnsignedVarInt(flag);
+    wp.writeUnsignedVarInt(layer);
     std::shared_ptr<Packet> pkt = MinecraftPackets::createPacket(MinecraftPacketIds::UpdateBlock);
     pkt->read(wp);
     dim.sendPacketForPosition(bp, *pkt, nullptr);
 }
 
-void PacketHelper::shutdown() {
+void PacketHelper::_shutdown() {
     mShutdown = true;
 }

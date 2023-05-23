@@ -6,9 +6,11 @@
 #include "PacketHelper.h"
 
 #include "llapi/ScheduleAPI.h"
+
 #include "llapi/mc/Material.hpp"
 #include "llapi/mc/StaticVanillaBlocks.hpp"
 #include "llapi/mc/Level.hpp"
+#include "llapi/mc/AABB.hpp"
 
 LightMgr lightMgr;
 
@@ -70,7 +72,6 @@ void LightMgr::clear(identity_t id) {
     mRecordedInfo.erase(id);
 }
 
-#include "llapi/mc/AABB.hpp"
 void LightMgr::markBadArea(BlockSource &region, const BlockPos &pos) {
     for (auto& i : mRecordedInfo) {
         if (i.second.mPos == pos) turnOff(i.first);

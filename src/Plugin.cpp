@@ -39,11 +39,4 @@ void PluginInit() {
         return true;
     });
 
-    Event::ConsoleCmdEvent::subscribe([](const Event::ConsoleCmdEvent& ev) -> bool {
-        if (ev.mCommand == "stop") {
-            packetHelper.shutdown();
-        }
-        return true;
-    });
-
 }

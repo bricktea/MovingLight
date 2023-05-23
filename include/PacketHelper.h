@@ -23,13 +23,15 @@ enum BlockUpdateLayer {
 class PacketHelper {
 public:
 
-    void shutdown();
+    explicit PacketHelper() noexcept;
 
     void UpdateBlockPacket(Dimension& dim, const BlockPos& bp, unsigned int runtimeId, BlockUpdateFlags flag = BlockUpdateNetwork, BlockUpdateLayer layer = BlockUpdateDefault) const;
 
 private:
 
-    bool mShutdown = false;
+    void _shutdown();
+
+    std::atomic<bool> mShutdown = false;
 
 };
 
