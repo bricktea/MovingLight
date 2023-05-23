@@ -14,6 +14,10 @@ This plugin provides mobile light source function on bedrock dedicated servers, 
  - It will not damage your redstone machine, for example: it will not trigger the observer's response.
  - Authorized under the MIT license, you may use within the scope of the license.
 
+### Known Issue
+ - Some blocks (such as top snow and signs) do not create light sources to avoid client crashes or rendering errors.
+ - When the player is moving at high speed, the light source may not appear as realistic.
+
 ### Configuration file
 ```json5
 // Generally speaking, you don't need to modify them.
