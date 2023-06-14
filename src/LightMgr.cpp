@@ -3,7 +3,6 @@
 //
 
 #include "LightMgr.h"
-#include "PacketHelper.h"
 
 #include "llapi/ScheduleAPI.h"
 
@@ -11,6 +10,9 @@
 #include "llapi/mc/StaticVanillaBlocks.hpp"
 #include "llapi/mc/Level.hpp"
 #include "llapi/mc/AABB.hpp"
+#include "llapi/mc/UpdateBlockPacket.hpp"
+#include "llapi/mc/Dimension.hpp"
+#include "llapi/mc/VanillaBlockTypeIds.hpp"
 
 LightMgr lightMgr;
 
@@ -23,8 +25,8 @@ bool LightMgr::isValid(identity_t id) {
 }
 
 void LightMgr::init(identity_t id) {
-    LightInfo li;
-    mRecordedInfo[id] = li;
+    LightInfo info;
+    mRecordedInfo[id] = info;
 }
 
 bool LightMgr::isTurningOn(identity_t id) {
@@ -38,7 +40,8 @@ void LightMgr::turnOff(identity_t id) {
     auto pos = mRecordedInfo[id].mPos;
     auto dim = Global<Level>->getDimension(mRecordedInfo[id].mDimId).get();
     if (dim) {
-        packetHelper.UpdateBlockPacket(*dim, pos, dim->getBlockSourceFromMainChunkSource().getBlock(pos).getRuntimeId(), BlockUpdateNoGraphics);
+        UpdateBlockPacket updateBlock(pos, 0, dim->getBlockSourceFromMainChunkSource().getBlock(pos).getRuntimeId(), 3);
+        dim->sendPacketForPosition(pos, updateBlock, nullptr);
     }
 }
 
@@ -57,7 +60,8 @@ void LightMgr::turnOn(identity_t id, Dimension& dim, BlockPos bp, unsigned int l
     auto& blk = region.getBlock(bp);
     if (std::find(mBannedBlocks.begin(), mBannedBlocks.end(), blk.getName()) != mBannedBlocks.end()) return;
 
-    packetHelper.UpdateBlockPacket(dim, bp, StaticVanillaBlocks::mLightBlock->getRuntimeId() - 15 + lightLv, BlockUpdateNoGraphics);
+    UpdateBlockPacket updateBlock(bp, 0, getLightBlockNetworkId(lightLv), 3);
+    dim.sendPacketForPosition(bp, updateBlock, nullptr);
     if (!isSamePos && (isOpened || !isSameLight)) turnOff(id);
 
     rec.mLighting = true;
@@ -104,6 +108,17 @@ bool LightMgr::_isBadArea(const BlockSource &region, const BlockPos &pos) {
     return ret;
 }
 
+void LightMgr::setLightBlockNetworkId(unsigned short tileData, unsigned int networkId) {
+    mLightBlockNetworkIdLookupMap[tileData] = networkId;
+}
+
+unsigned int LightMgr::getLightBlockNetworkId(unsigned short tileData) {
+    if (mLightBlockNetworkIdLookupMap.contains(tileData)) {
+        return mLightBlockNetworkIdLookupMap[tileData];
+    }
+    return 0;
+}
+
 TClasslessInstanceHook(bool, "?shouldStopFalling@TopSnowBlock@@UEBA_NAEAVActor@@@Z",
                        Actor* a2) {
     auto ret = original(this, a2);
@@ -111,4 +126,14 @@ TClasslessInstanceHook(bool, "?shouldStopFalling@TopSnowBlock@@UEBA_NAEAVActor@@
         lightMgr.markBadArea(a2->getRegion(), a2->getBlockPos());
     }
     return ret;
+}
+
+TInstanceHook(void, "?setRuntimeId@Block@@IEBAXAEBI@Z",
+              Block, unsigned int* a2)
+{
+    original(this, a2);
+    if (VanillaBlockTypeIds::LightBlock == getName()) {
+        // logger.debug("tile = {}, networkId = {}", getTileData(), *a2);
+        lightMgr.setLightBlockNetworkId(getTileData(), *a2);
+    }
 }

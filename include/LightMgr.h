@@ -31,6 +31,10 @@ public:
 
     void markBadArea(BlockSource& region, const BlockPos& pos);
 
+    void setLightBlockNetworkId(unsigned short tileData, unsigned int networkId);
+
+    unsigned int getLightBlockNetworkId(unsigned short tileData);
+
 private:
 
     void _runBadAreaJanitor();
@@ -47,6 +51,8 @@ private:
     };
 
     std::unordered_map<int, std::unordered_map<BlockPos, unsigned long long>> mBadAreas;
+
+    std::unordered_map<unsigned short, unsigned int> mLightBlockNetworkIdLookupMap;
 
     std::unordered_map<identity_t, LightInfo> mRecordedInfo;
     const vector<HashedString> mBannedBlocks = {

@@ -4,7 +4,6 @@
 
 #include "Plugin.h"
 #include "Config.h"
-#include "PacketHelper.h"
 
 #include <filesystem>
 
@@ -12,7 +11,7 @@ using namespace ll;
 #define DATA_PATH "plugins/MovingLight/"
 
 Logger logger("MovingLight");
-Version PLUGIN_VERSION { 2, 0, 0, Version::Release };
+Version PLUGIN_VERSION { 2, 1, 0, Version::Release };
 
 void PluginMain() {
     logger.info("loaded, ver " + PLUGIN_VERSION.toString() + ", author: redbeanw.");

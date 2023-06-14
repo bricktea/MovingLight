@@ -6,7 +6,7 @@ BDS_DIRECTORY = '../../'
 target(PROJECT_NAME)
     set_kind('shared')
     set_symbols('debug')
-    set_languages('c17','c++17')
+    set_languages('c99','c++20')
     set_basename(PROJECT_NAME)
     set_optimize('fastest')
     add_files('src/*.cpp')
