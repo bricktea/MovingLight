@@ -45,5 +45,7 @@ This plugin provides mobile light source function on bedrock dedicated servers, 
 }
 ```
 
-### Encountered a bug?
-Please send a issue.
+### Contact Us
+ - Join our telegram group [here](https://t.me/bdsplugin)
+ - Send a issue.
+
