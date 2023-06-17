@@ -48,10 +48,11 @@ TInstanceHook(void, "?normalTick@Player@@UEAAXXZ",
     if (!config.isEnabled() || !hasDimension())
         return;
     auto light = std::max(config.getBrightness(getSelectedItem()), config.getBrightness(getOffhandSlot()));
-    if (light != 0)
-        lightMgr.turnOn((identity_t)this, getDimension(), getBlockPos(), light);
-    else
+    if (light != 0) {
+        lightMgr.turnOn((identity_t)this, getDimension(), getBlockPos(), light, isImmersedInWater());
+    } else {
         lightMgr.turnOff((identity_t)this);
+    }
 }
 
 TInstanceHook(void, "?postNormalTick@ItemActor@@QEAAXXZ",
@@ -62,7 +63,7 @@ TInstanceHook(void, "?postNormalTick@ItemActor@@QEAAXXZ",
     if (!item) return;
     auto light = config.getBrightness(*item);
     if (light != 0) {
-        lightMgr.turnOn((identity_t)this, getDimension(), getBlockPos(), light);
+        lightMgr.turnOn((identity_t)this, getDimension(), getBlockPos(), light, isImmersedInWater());
     } else {
         lightMgr.turnOff((identity_t)this);
     }

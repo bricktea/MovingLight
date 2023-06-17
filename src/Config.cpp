@@ -51,7 +51,8 @@ string Config::_toString() {
             {"items", mItems},
             {"offhand", mOffHandItems},
             {"enableItemEntity", mEnableItemActor},
-            {"enableAutoGlowingBlockDiscover", mAutoDiscoverGlowingBlock}
+            {"enableAutoGlowingBlockDiscover", mAutoDiscoverGlowingBlock},
+            {"enableUnderWater", mEnableUnderWater}
     };
     return cfg.dump(4);
 }
@@ -63,6 +64,7 @@ bool Config::_fromJson(json &cfg) {
     cfg.at("offhand").get_to(mOffHandItems);
     cfg.at("enableItemEntity").get_to(mEnableItemActor);
     cfg.at("enableAutoGlowingBlockDiscover").get_to(mAutoDiscoverGlowingBlock);
+    cfg.at("enableUnderWater").get_to(mEnableUnderWater);
     return true;
 }
 
@@ -79,6 +81,11 @@ void Config::_update(json& cfg) {
         cfg["version"] = 200;
         needSave = true;
     }
+    if (version < 211) {
+        cfg["enableUnderWater"] = true;
+        cfg["version"] = 211;
+        needSave = true;
+    }
     if (needSave) {
         logger.warn("The configuration file has been updated to v{}.", mVersion);
         _save();
@@ -93,7 +100,7 @@ void Config::_save() {
 }
 
 bool Config::isLightSource(const HashedString& name) {
-    return mItems.find(name) != mItems.end();
+    return mItems.contains(name);
 }
 
 bool Config::isOffhandItem(const HashedString& name) {
@@ -112,7 +119,7 @@ void Config::_computeLightBlocks() {
         auto& block = legacy.getRenderBlock();
         auto& typeName = block.getName();
         int light = block.getLightEmission().value;
-        if (light > 0 && mItems.find(typeName) == mItems.end()) {
+        if (light > 0 && !mItems.contains(typeName)) {
             mItems[typeName] = light;
         }
         return true;
@@ -130,4 +137,8 @@ bool Config::isEnabled() const {
 
 bool Config::isItemActorEnabled() const {
     return mEnableItemActor;
+}
+
+bool Config::isUnderWaterEnabled() const {
+    return mEnableUnderWater;
 }

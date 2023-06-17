@@ -31,6 +31,8 @@ public:
 
     [[nodiscard]] unsigned int getBrightness(const ItemStack& it);
 
+    [[nodiscard]] bool isUnderWaterEnabled() const;
+
 private:
 
     bool _fromJson(json& cfg);
@@ -48,11 +50,12 @@ private:
 
     std::string mPath;
 
-    const unsigned int mVersion = 200;
+    const unsigned int mVersion = 211;
 
     bool mEnabled = true;
     bool mEnableItemActor = true;
     bool mAutoDiscoverGlowingBlock = true;
+    bool mEnableUnderWater = true;
 
     std::unordered_map<HashedString, unsigned int> mItems;
 
