@@ -3,13 +3,13 @@
 //
 
 #include "LightMgr.h"
+#include "Config.h"
 
 #include "llapi/ScheduleAPI.h"
 
 #include "llapi/mc/Material.hpp"
 #include "llapi/mc/StaticVanillaBlocks.hpp"
 #include "llapi/mc/Level.hpp"
-#include "llapi/mc/AABB.hpp"
 #include "llapi/mc/UpdateBlockPacket.hpp"
 #include "llapi/mc/Dimension.hpp"
 #include "llapi/mc/VanillaBlockTypeIds.hpp"
@@ -18,10 +18,16 @@ LightMgr lightMgr;
 
 LightMgr::LightMgr() noexcept {
     Schedule::repeat([this] { _runBadAreaJanitor(); }, 20);
+    Event::ConsoleCmdEvent::subscribe([this](const Event::ConsoleCmdEvent& ev) -> bool {
+        if (ev.mCommand == "stop") {
+            mStopPacketSending = true;
+        }
+        return true;
+    });
 }
 
 bool LightMgr::isValid(identity_t id) {
-    return mRecordedInfo.find(id) != mRecordedInfo.end();
+    return mRecordedInfo.contains(id);
 }
 
 void LightMgr::init(identity_t id) {
@@ -40,12 +46,19 @@ void LightMgr::turnOff(identity_t id) {
     auto pos = mRecordedInfo[id].mPos;
     auto dim = Global<Level>->getDimension(mRecordedInfo[id].mDimId).get();
     if (dim) {
-        UpdateBlockPacket updateBlock(pos, 0, dim->getBlockSourceFromMainChunkSource().getBlock(pos).getRuntimeId(), 3);
-        dim->sendPacketForPosition(pos, updateBlock, nullptr);
+        auto& block = dim->getBlockSourceFromMainChunkSource().getBlock(pos);
+        if (block == *StaticVanillaBlocks::mWater) {
+            UpdateBlockPacket updateBlock(pos, 0, block.getRuntimeId(), 3);
+            _sendPacket(dim, pos, updateBlock);
+        } else {
+            UpdateBlockPacket updateBlock(pos, 1, block.getRuntimeId(), 3);
+            _sendPacket(dim, pos, updateBlock);
+        }
     }
 }
 
-void LightMgr::turnOn(identity_t id, Dimension& dim, BlockPos bp, unsigned int lightLv) {
+void LightMgr::turnOn(identity_t id, Dimension& dim, BlockPos bp, unsigned int lightLv, bool underWater) {
+    if (underWater && !config.isUnderWaterEnabled()) return;
     if (!isValid(id)) init(id);
     auto& rec = mRecordedInfo[id];
     bool isOpened = isTurningOn(id);
@@ -58,10 +71,16 @@ void LightMgr::turnOn(identity_t id, Dimension& dim, BlockPos bp, unsigned int l
     if (_isBadArea(region, bp)) return;
 
     auto& blk = region.getBlock(bp);
-    if (std::find(mBannedBlocks.begin(), mBannedBlocks.end(), blk.getName()) != mBannedBlocks.end()) return;
+    if (underWater) {
+        if (blk != *StaticVanillaBlocks::mWater) return;
+        UpdateBlockPacket updateBlock(bp, 0, getLightBlockNetworkId(lightLv), 3);
+        _sendPacket(&dim, bp, updateBlock);
+    } else {
+        if (std::find(mBannedBlocks.begin(), mBannedBlocks.end(), blk.getName()) != mBannedBlocks.end()) return;
+        UpdateBlockPacket updateBlock(bp, 1, getLightBlockNetworkId(lightLv), 3);
+        _sendPacket(&dim, bp, updateBlock);
+    }
 
-    UpdateBlockPacket updateBlock(bp, 0, getLightBlockNetworkId(lightLv), 3);
-    dim.sendPacketForPosition(bp, updateBlock, nullptr);
     if (!isSamePos && (isOpened || !isSameLight)) turnOff(id);
 
     rec.mLighting = true;
@@ -103,7 +122,7 @@ void LightMgr::_runBadAreaJanitor() {
 bool LightMgr::_isBadArea(const BlockSource &region, const BlockPos &pos) {
     int dimId = region.getDimensionId();
     mBadAreaLocker.lock();
-    bool ret = mBadAreas.find(dimId) != mBadAreas.end() && mBadAreas[dimId].find(pos) != mBadAreas[dimId].end();
+    bool ret = mBadAreas.contains(dimId) && mBadAreas[dimId].contains(pos);
     mBadAreaLocker.unlock();
     return ret;
 }
@@ -117,6 +136,11 @@ unsigned int LightMgr::getLightBlockNetworkId(unsigned short tileData) {
         return mLightBlockNetworkIdLookupMap[tileData];
     }
     return 0;
+}
+
+void LightMgr::_sendPacket(Dimension* dim, const BlockPos &pos, const Packet& pkt) {
+    if (mStopPacketSending) return;
+    dim->sendPacketForPosition(pos, pkt, nullptr);
 }
 
 TClasslessInstanceHook(bool, "?shouldStopFalling@TopSnowBlock@@UEBA_NAEAVActor@@@Z",

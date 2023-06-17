@@ -25,7 +25,7 @@ public:
 
     void turnOff(identity_t id);
 
-    void turnOn(identity_t id, Dimension& dim, BlockPos bp, unsigned int lightLv);
+    void turnOn(identity_t id, Dimension& dim, BlockPos bp, unsigned int lightLv, bool underWater);
 
     void clear(identity_t id);
 
@@ -37,11 +37,9 @@ public:
 
 private:
 
-    void _runBadAreaJanitor();
-
-    bool _isBadArea(const BlockSource& region, const BlockPos& pos);
-
     CsLock mBadAreaLocker;
+
+    std::atomic<bool> mStopPacketSending = false;
 
     struct LightInfo {
         bool mLighting      = false;
@@ -94,6 +92,12 @@ private:
             "minecraft:crimson_hanging_sign",
             "minecraft:warped_hanging_sign"
     };
+
+    void _runBadAreaJanitor();
+
+    bool _isBadArea(const BlockSource& region, const BlockPos& pos);
+
+    void _sendPacket(Dimension* dim, const BlockPos& pos, class Packet const& pkt);
 
 
 };
