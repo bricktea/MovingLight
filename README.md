@@ -18,7 +18,7 @@ This plugin provides mobile light source function on bedrock dedicated servers, 
  - Some blocks (such as top snow and signs) do not create light sources to avoid client crashes or rendering errors.
  - When the player is moving at high speed, the light source may not appear as realistic.
 
-### How To Switch Item To Off-Hand?
+### How To Switch Item To Off-Hand
  - Take the item and try to break the block.
 
 ### Configuration file
