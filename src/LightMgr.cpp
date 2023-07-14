@@ -14,10 +14,31 @@
 #include "llapi/mc/Dimension.hpp"
 #include "llapi/mc/VanillaBlockTypeIds.hpp"
 
+#include "llapi/mc/Player.hpp"
+#include "llapi/mc/Container.hpp"
+
 LightMgr lightMgr;
 
 LightMgr::LightMgr() noexcept {
     Schedule::repeat([this] { _runBadAreaJanitor(); }, 20);
+    Event::PlayerDestroyBlockEvent::subscribe([](const Event::PlayerDestroyBlockEvent& ev) -> bool {
+        if (!config.isEnabled()) {
+            return true;
+        }
+        auto pl = ev.mPlayer;
+        auto mainHand = pl->getSelectedItem();
+        if (mainHand.isNull() || !config.isOffhandItem(mainHand.getFullNameHash())) {
+            return true;
+        }
+        auto newHand = mainHand.clone_s();
+        if (config.isLightSource(newHand->getFullNameHash()) && pl->getOffhandSlot().isNull()) {
+            pl->getInventory().removeItem_s(pl->getSelectedItemSlot(), mainHand.getCount());
+            pl->setOffhandSlot(*newHand);
+            pl->sendInventory(mainHand);
+            return false;
+        }
+        return true;
+    });
     Event::ConsoleCmdEvent::subscribe([this](const Event::ConsoleCmdEvent& ev) -> bool {
         if (ev.mCommand == "stop") {
             mStopPacketSending = true;

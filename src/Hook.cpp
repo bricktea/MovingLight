@@ -8,23 +8,6 @@
 #include "LightMgr.h"
 
 #include "llapi/mc/Player.hpp"
-#include "llapi/mc/Container.hpp"
-
-// OffHand Helper
-
-TClasslessInstanceHook(void, "?sendBlockDestructionStarted@BlockEventCoordinator@@QEAAXAEAVPlayer@@AEBVBlockPos@@@Z",
-                       Player* pl, BlockPos* bp) {
-    original(this, pl, bp);
-    if (!config.isEnabled()) return;
-    auto mainHand = &pl->getSelectedItem();
-    if (mainHand->isNull() || !config.isOffhandItem(mainHand->getFullNameHash())) return;
-    auto newHand = mainHand->clone_s();
-    if (config.isLightSource(newHand->getFullNameHash()) && pl->getOffhandSlot().isNull()) {
-        pl->getInventory().removeItem_s(pl->getSelectedItemSlot(), mainHand->getCount());
-        pl->setOffhandSlot(*newHand);
-        pl->sendInventory(mainHand);
-    }
-}
 
 // Remove
 

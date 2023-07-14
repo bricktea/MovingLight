@@ -58,6 +58,7 @@ private:
             "minecraft:water",
             "minecraft:snow",
             "minecraft:snow_layer",
+            // Sign
             "minecraft:standing_sign",
             "minecraft:spruce_standing_sign",
             "minecraft:birch_standing_sign",
@@ -90,7 +91,11 @@ private:
             "minecraft:cherry_hanging_sign",
             "minecraft:bamboo_hanging_sign",
             "minecraft:crimson_hanging_sign",
-            "minecraft:warped_hanging_sign"
+            "minecraft:warped_hanging_sign",
+            // Flag
+            "minecraft:standing_banner",
+            "minecraft:wall_banner",
+            "minecraft:banner"
     };
 
     void _runBadAreaJanitor();
