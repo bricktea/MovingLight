@@ -1,13 +1,53 @@
-# Xmake cache
-.xmake/
-build/
+## https://github.com/github/gitignore/blob/main/C++.gitignore
+# Prerequisites
+*.d
 
-# CMake cache
-cmake*
-CMake*
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
 
-# MacOS Cache
-.DS_Store
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
 
 
+## https://github.com/github/gitignore/blob/main/CMake.gitignore
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
 compile_commands.json
+CTestTestfile.cmake
+_deps
+
+
+## Project specific
+# Xmake cache
+/.xmake/
+/build/
