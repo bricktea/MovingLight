@@ -48,6 +48,7 @@ _deps
 
 
 ## Project specific
-# Xmake cache
+/.idea/
+/.vscode/
 /.xmake/
 /build/
