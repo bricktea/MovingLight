@@ -1,4 +1,5 @@
 #include <llapi/HookAPI.h>
+#include <llapi/LoggerAPI.h>
 
 #include <llapi/mc/Block.hpp>
 #include <llapi/mc/Player.hpp>
@@ -11,7 +12,6 @@ extern Config config;
 extern LightManager lightManager;
 
 // Remove
-
 TInstanceHook(ItemActor*, "??_EItemActor@@UEAAPEAXI@Z", ItemActor, char a2) {
   lightManager.clear((identity_t)this);
   return original(this, a2);
@@ -23,7 +23,6 @@ TInstanceHook(void, "??1Player@@UEAA@XZ", Player) {
 }
 
 // Tick
-
 TInstanceHook(void, "?normalTick@Player@@UEAAXXZ", Player) {
   original(this);
   if (!config.isEnabled() || !hasDimension()) return;

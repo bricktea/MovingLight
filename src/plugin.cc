@@ -1,3 +1,4 @@
+#include <llapi/EventAPI.h>
 #include <llapi/LoggerAPI.h>
 
 #include <filesystem>
@@ -12,17 +13,12 @@ LightManager lightManager;
 
 Logger logger("MovingLight");
 
-ll::Version PLUGIN_VERSION{2, 1, 2, ll::Version::Release};
-
-void PluginMain() {
-  logger.info("loaded, ver " + PLUGIN_VERSION.toString() +
-              ", author: redbeanw.");
-}
+ll::Version PLUGIN_VERSION{2, 3, 1, ll::Version::Release};
 
 void PluginInit() {
   if (!std::filesystem::exists(DATA_PATH)) {
     logger.warn(
-        "Could not find the directory for the configuration file, creating...");
+        "No configuration file found, creating a new one with default values.");
     std::filesystem::create_directory(DATA_PATH);
   }
 
@@ -31,13 +27,9 @@ void PluginInit() {
   // Register plugin to LL.
 
   ll::registerPlugin(
-      "MovingLight", "Items always emit light~", PLUGIN_VERSION,
+      "MovingLight",
+      "Enabling you to hold a light source in your hand and move it around",
+      PLUGIN_VERSION,
       {{"Author", "RedbeanW"},
-       {"Github", "https://github.com/Redbeanw44602/MovingLight"}});
-
-  Event::ServerStartedEvent::subscribe(
-      [](Event::ServerStartedEvent ev) -> bool {
-        PluginMain();
-        return true;
-      });
+       {"Github", "https://github.com/LiteLDev/MovingLight"}});
 }

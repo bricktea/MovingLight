@@ -18,8 +18,8 @@ extern Config config;
 
 LightManager::LightManager() noexcept {
   Schedule::repeat([this] { _runBadAreaJanitor(); }, 20);
-  Event::PlayerDestroyBlockEvent::subscribe(
-      [](const Event::PlayerDestroyBlockEvent& ev) -> bool {
+  Event::PlayerSwingEvent::subscribe(
+      [](const Event::PlayerSwingEvent& ev) -> bool {
         if (!config.isEnabled()) {
           return true;
         }
@@ -30,16 +30,18 @@ LightManager::LightManager() noexcept {
           return true;
         }
         auto newHand = mainHand.clone_s();
+        newHand->set(1);
+        // newHand->;
         if (config.isLightSource(newHand->getFullNameHash()) &&
             pl->getOffhandSlot().isNull()) {
-          pl->getInventory().removeItem_s(pl->getSelectedItemSlot(),
-                                          mainHand.getCount());
+          pl->getInventory().removeItem_s(pl->getSelectedItemSlot(), 1);
           pl->setOffhandSlot(*newHand);
           pl->sendInventory(mainHand);
           return false;
         }
         return true;
       });
+
   Event::ConsoleCmdEvent::subscribe(
       [this](const Event::ConsoleCmdEvent& ev) -> bool {
         if (ev.mCommand == "stop") {

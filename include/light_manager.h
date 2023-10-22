@@ -4,6 +4,7 @@
 #include <llapi/utils/CsLock.h>
 
 #include <llapi/mc/BlockSource.hpp>
+#include <llapi/mc/Dimension.hpp>
 #include <llapi/mc/HashedString.hpp>
 #include <llapi/mc/Tick.hpp>
 
