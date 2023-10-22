@@ -1,0 +1,37 @@
+on:
+  pull_request:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Get BDS libraries
+        run: |
+          $bds_version = (Get-Content bds_version.txt)
+          $url = "https://github.com/LiteLDev/BDSLibrary/releases/download/$bds_version/bdslibrary-$bds_version-windows-amd64.zip"
+          Invoke-WebRequest -Uri $url -OutFile bds_lib.zip
+          Expand-Archive -Path bds_lib.zip -DestinationPath sdk/lib
+
+      - uses: xmake-io/github-action-setup-xmake@v1
+      
+      - run: |
+          xmake repo -u
+
+      - run: |
+          xmake f -a x64 -m release -p windows -v -y
+
+      - run: |
+          xmake -w -y
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: movinglight-windows-x64-${{ github.sha }}
+          path: |
+            build/windows/x64/release/MovingLight.dll
+            build/windows/x64/release/MovingLight.pdb
