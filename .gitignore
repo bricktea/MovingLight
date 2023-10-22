@@ -52,3 +52,4 @@ _deps
 /.vscode/
 /.xmake/
 /build/
+CMakeLists.txt

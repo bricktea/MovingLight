@@ -8,7 +8,7 @@ set_symbols('debug')
 set_languages('c99', 'c++20')
 set_basename(PROJECT_NAME)
 set_optimize('fastest')
-add_files('src/*.cpp')
+add_files('src/*.cc')
 add_cxflags('-utf-8')
 add_linkdirs(
     'sdk/Lib'

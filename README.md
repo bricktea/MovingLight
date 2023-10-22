@@ -27,10 +27,10 @@ lip install github.com/tooth-hub/movinglight
 
 ## Usage
 
-### How To Switch Item To Off-Hand
- - Take the item and try to break the block.
+To put a light source item to your off-hand, just grab it in your main hand and swing your arm.
 
-### Configuration file
+### Configuration File
+
 ```json5
 // Generally speaking, you don't need to modify them.
 {
